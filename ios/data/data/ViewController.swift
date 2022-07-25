@@ -23,68 +23,61 @@ class ViewController: UIViewController {
     }
     
     @IBAction func send(_ sender: Any) {
-        // Add a new document with a generated ID
-        var ref: DocumentReference? = nil
-        ref = db.collection("users").addDocument(data: [
-            "first": "Ada",
-            "last": "Lovelace",
-            "born": 1815
-        ]) { err in
-            if let err = err {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added with ID: \(ref!.documentID)")
-            }
-        }
-        // Add a second document with a generated ID.
-        ref = db.collection("users").addDocument(data: [
-            "first": "Alan",
-            "middle": "Mathison",
-            "last": "Turing",
-            "born": 1912
-        ]) { err in
-            if let err = err {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added with ID: \(ref!.documentID)")
-            }
-        }
-        db.collection("users").getDocuments() { (querySnapshot, err) in
-            if let err = err {
-                print("Error getting documents: \(err)")
-            } else {
-                for document in querySnapshot!.documents {
-                    print("\(document.documentID) => \(document.data())")
-                }
-            }
-        }
+        let citiesRef = db.collection("cities")
+
+        citiesRef.document("SF").setData([
+            "name": "San Francisco",
+            "state": "CA",
+            "country": "USA",
+            "capital": false,
+            "population": 860000,
+            "regions": ["west_coast", "norcal"]
+            ])
+        citiesRef.document("LA").setData([
+            "name": "Los Angeles",
+            "state": "CA",
+            "country": "USA",
+            "capital": false,
+            "population": 3900000,
+            "regions": ["west_coast", "socal"]
+            ])
+        citiesRef.document("DC").setData([
+            "name": "Washington D.C.",
+            "country": "USA",
+            "capital": true,
+            "population": 680000,
+            "regions": ["east_coast"]
+            ])
+        citiesRef.document("TOK").setData([
+            "name": "Tokyo",
+            "country": "Japan",
+            "capital": true,
+            "population": 9000000,
+            "regions": ["kanto", "honshu"]
+            ])
+        citiesRef.document("BJ").setData([
+            "name": "Beijing",
+            "country": "China",
+            "capital": true,
+            "population": 21500000,
+            "regions": ["jingjinji", "hebei"]
+            ])
     }
     
-    @IBAction func read(_ sender: Any) {
-        readListData()
-    }
-    func readListData(){
-        let db = Firestore.firestore()
-        
-        db.collection("users").whereField("born", isEqualTo: "1912").getDocuments() {
-            (QuerySnapshot, err) in
-            if let error = err {
-                print("읽기에러발생", error.localizedDescription)
-            }else{
-                for doucment in QuerySnapshot!.documents{
-                    print("\(document.documentID) => \(document.data())")
-                
-                    let dataDic = document.data() as NSDictionary
-                    let name = dataDic
-                }
+    @IBAction func SENT(_ sender: Any) {
+        let docRef = db.collection("cities").document("SF")
+
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                print("Document data: \(dataDescription)")
+            } else {
+                print("Document does not exist")
             }
         }
-    }
-    
 }
 
 
 
-
-
+}
 

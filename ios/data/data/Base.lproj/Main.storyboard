@@ -46,7 +46,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="불러오기"/>
                                 <connections>
-                                    <action selector="read:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9rx-k6-y1p"/>
+                                    <action selector="SENT:" destination="BYZ-38-t0r" eventType="touchUpInside" id="beB-ye-bCU"/>
                                 </connections>
                             </button>
                         </subviews>
