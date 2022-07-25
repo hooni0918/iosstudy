@@ -60,5 +60,31 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func read(_ sender: Any) {
+        readListData()
+    }
+    func readListData(){
+        let db = Firestore.firestore()
+        
+        db.collection("users").whereField("born", isEqualTo: "1912").getDocuments() {
+            (QuerySnapshot, err) in
+            if let error = err {
+                print("읽기에러발생", error.localizedDescription)
+            }else{
+                for doucment in QuerySnapshot!.documents{
+                    print("\(document.documentID) => \(document.data())")
+                
+                    let dataDic = document.data() as NSDictionary
+                    let name = dataDic
+                }
+            }
+        }
+    }
+    
 }
+
+
+
+
+
 
