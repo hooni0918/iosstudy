@@ -13,26 +13,52 @@ import FirebaseFirestore
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var quoteTextfield: UITextField!
-    @IBOutlet weak var authorTextfield: UITextField!
-
-    var docRef: DocumentReference!
+    @IBOutlet weak var text: UITextView!
     
-    @IBAction func saveTapped(_ sender: UIButton) {
-        guard let quoteText = quoteTextfield.text, !quoteText.isEmpty else { return }
-        guard let quoteAuthor = authorTextfield.text, !quoteAuthor.isEmpty else { return }
-        let dataToSave: [String: Any] = ["quote": quoteText, "author": quoteAuthor]
-        docRef.setData(dataToSave) { (error) in
-            if let error = error {
-                print("error: \(error.localizedDescription)")
-            }else{
-                print("save!")
-            }
-        }}
-        
+    
+    let db = Firestore.firestore()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        docRef = Firestore.firestore().document("sampleData/inspiration")//이쪽이 문제임 다시한번 생각하기
     }
+    
+    @IBAction func send(_ sender: Any) {
+        // Add a new document with a generated ID
+        var ref: DocumentReference? = nil
+        ref = db.collection("users").addDocument(data: [
+            "first": "Ada",
+            "last": "Lovelace",
+            "born": 1815
+        ]) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added with ID: \(ref!.documentID)")
+            }
+        }
+        // Add a second document with a generated ID.
+        ref = db.collection("users").addDocument(data: [
+            "first": "Alan",
+            "middle": "Mathison",
+            "last": "Turing",
+            "born": 1912
+        ]) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added with ID: \(ref!.documentID)")
+            }
+        }
+        db.collection("users").getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                for document in querySnapshot!.documents {
+                    print("\(document.documentID) => \(document.data())")
+                }
+            }
+        }
+    }
+    
 }
 
