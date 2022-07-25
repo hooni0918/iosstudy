@@ -13,8 +13,6 @@ import FirebaseFirestore
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var text: UITextView!
-    
     
     let db = Firestore.firestore()
     
@@ -22,6 +20,47 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    
+    @IBAction func name(_ sender: Any) {
+        let db = Firestore.firestore()
+         var ref: DocumentReference? = nil
+         ref = db.collection("users").addDocument(data: [
+             "first": "Ada",
+             "last": "Lovelace",
+             "born": 1815
+         ]) { err in
+             if let err = err {
+                 print("Error adding document: \(err)")
+             } else {
+                 print("Document added with ID: \(ref!.documentID)")
+             }
+         }
+         // Add a second document with a generated ID.
+         ref = db.collection("users").addDocument(data: [
+             "first": "Alan",
+             "middle": "Mathison",
+             "last": "Turing",
+             "born": 1912
+         ]) { err in
+             if let err = err {
+                 print("Error adding document: \(err)")
+             } else {
+                 print("Document added with ID: \(ref!.documentID)")
+             }
+         }
+         db.collection("users").getDocuments() { (querySnapshot, err) in
+             if let err = err {
+                 print("Error getting documents: \(err)")
+             } else {
+                 for document in querySnapshot!.documents {
+                     print("\(document.documentID) => \(document.data())")
+                 }
+             }
+         }
+         }
+         
+    
+    //cities 정보
     @IBAction func send(_ sender: Any) {
         let citiesRef = db.collection("cities")
 
